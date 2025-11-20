@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
           userName: program.userName,
           userEmail: program.userEmail,
           programName: program.programName,
-          missedPaymentDate: program.nextPaymentDate.toLocaleDateString(),
+          missedPaymentDate: program.nextPaymentDate ? program.nextPaymentDate.toLocaleDateString() : new Date().toLocaleDateString(),
         });
       } catch (emailError) {
         console.error("Failed to send freeze notification:", emailError);

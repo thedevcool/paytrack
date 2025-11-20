@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       program.userEmail,
       program.programName,
       actualPaymentAmount,
-      program.nextPaymentDate
+      program.nextPaymentDate ? program.nextPaymentDate.toISOString() : new Date().toISOString()
     );
 
     return NextResponse.json({ message: "Reminder sent successfully" });

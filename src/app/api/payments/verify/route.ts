@@ -82,7 +82,15 @@ export async function GET(request: NextRequest) {
     }
 
     // Prepare update data
-    const updateData = {
+    const updateData: {
+      $inc: { amountPaid: number };
+      $push: { paymentHistory: { amount: number; date: Date; reference: string; status: string } };
+      isCompleted: boolean;
+      nextPaymentDate?: Date;
+      status?: string;
+      isFrozen?: boolean;
+      $unset?: Record<string, string>;
+    } = {
       $inc: { amountPaid: actualAmount },
       $push: {
         paymentHistory: {

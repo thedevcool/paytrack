@@ -52,19 +52,6 @@ export async function POST(request: NextRequest) {
 
     const totalAmount = costPerMonth * duration;
 
-    // Debug: Log the program data being created
-    console.log("Creating program with data:", {
-      userId: session.user.id,
-      userEmail: session.user.email,
-      userName: session.user.name,
-      programName,
-      costPerMonth,
-      duration,
-      paymentSchedule,
-      totalAmount,
-      amountPaid: 0,
-    });
-
     const program = new Program({
       userId: session.user.id,
       userEmail: session.user.email,

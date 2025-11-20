@@ -128,7 +128,6 @@ export const sendWelcomeEmail = async (userEmail: string, userName: string) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log(`Welcome email sent to ${userEmail}`);
   } catch (error) {
     console.error("Error sending welcome email:", error);
     throw error;
@@ -196,7 +195,6 @@ export const sendPaymentReminder = async (
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log(`Payment reminder sent to ${userEmail}`);
   } catch (error) {
     console.error("Error sending payment reminder:", error);
     throw error;
@@ -351,7 +349,6 @@ export const sendAdminNotification = async (
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log(`Admin notification sent: ${type}`);
   } catch (error) {
     console.error("Error sending admin notification:", error);
     throw error;
@@ -445,7 +442,6 @@ export const sendProgramApprovalNotification = async (
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log(`Program approval notification sent to ${userEmail}`);
   } catch (error) {
     console.error("Error sending approval notification:", error);
     throw error;
@@ -515,7 +511,6 @@ export const sendPaymentConfirmation = async (
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log(`Payment confirmation sent to ${userEmail}`);
   } catch (error) {
     console.error("Error sending payment confirmation:", error);
     throw error;

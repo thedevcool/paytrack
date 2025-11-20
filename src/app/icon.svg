@@ -1,0 +1,14 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="8" fill="#1e40af"/>
+  <g opacity="0.95">
+    <!-- Payment tracking lines -->
+    <rect x="6" y="10" width="16" height="2" rx="1" fill="white"/>
+    <rect x="6" y="14" width="12" height="2" rx="1" fill="white" opacity="0.8"/>
+    <rect x="6" y="18" width="8" height="2" rx="1" fill="white" opacity="0.6"/>
+    <rect x="6" y="22" width="10" height="2" rx="1" fill="white" opacity="0.7"/>
+  </g>
+  
+  <!-- Success indicator -->
+  <circle cx="25" cy="7" r="4" fill="#10b981"/>
+  <path d="M23 7l1.5 1.5L27 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

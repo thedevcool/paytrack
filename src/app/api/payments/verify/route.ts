@@ -84,7 +84,14 @@ export async function GET(request: NextRequest) {
     // Prepare update data
     const updateData: {
       $inc: { amountPaid: number };
-      $push: { paymentHistory: { amount: number; date: Date; reference: string; status: string } };
+      $push: {
+        paymentHistory: {
+          amount: number;
+          date: Date;
+          reference: string;
+          status: string;
+        };
+      };
       isCompleted: boolean;
       nextPaymentDate?: Date;
       status?: string;

@@ -8,15 +8,13 @@ export const metadata: Metadata = {
     "Elegant payment tracking for your education programs. Monitor progress, manage payment schedules, and never miss a payment.",
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', sizes: '16x16', type: 'image/x-icon' },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "16x16", type: "image/x-icon" },
     ],
-    apple: [
-      { url: '/icon-512.svg', sizes: '180x180', type: 'image/svg+xml' },
-    ],
-    shortcut: '/favicon.svg',
+    apple: [{ url: "/icon-512.svg", sizes: "180x180", type: "image/svg+xml" }],
+    shortcut: "/favicon.svg",
   },
-  manifest: '/manifest.json',
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

@@ -1,16 +1,19 @@
 "use client";
 
 import { signIn, getProviders } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { ClientSafeProvider } from "next-auth/react";
 
-export default function SignIn() {
+function SignInContent() {
   const [providers, setProviders] = useState<Record<
     string,
     ClientSafeProvider
   > | null>(null);
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
 
   useEffect(() => {
     const fetchProviders = async () => {
@@ -22,7 +25,39 @@ export default function SignIn() {
 
   const handleSignIn = async (providerId: string) => {
     setLoading(true);
-    await signIn(providerId, { callbackUrl: "/dashboard" });
+    try {
+      await signIn(providerId, { callbackUrl: "/dashboard" });
+    } catch (error) {
+      console.error("Sign in error:", error);
+      setLoading(false);
+    }
+  };
+
+  const getErrorMessage = (error: string) => {
+    switch (error) {
+      case "Configuration":
+        return "There is a problem with the server configuration.";
+      case "AccessDenied":
+        return "Access denied. You might not have permission to sign in.";
+      case "Verification":
+        return "The verification link was invalid or has expired.";
+      case "OAuthSignin":
+      case "OAuthCallback":
+      case "OAuthCreateAccount":
+      case "EmailCreateAccount":
+      case "Callback":
+        return "There was a problem signing you in. Please try again.";
+      case "OAuthAccountNotLinked":
+        return "To confirm your identity, sign in with the same account you used originally.";
+      case "EmailSignin":
+        return "Check your email address.";
+      case "CredentialsSignin":
+        return "Sign in failed. Check the details you provided are correct.";
+      case "SessionRequired":
+        return "Please sign in to access this page.";
+      default:
+        return "An error occurred during sign in. Please try again.";
+    }
   };
 
   return (
@@ -35,10 +70,18 @@ export default function SignIn() {
               by Tini
             </span>
           </Link>
-          <p className="text-dark-600 mt-4">
-            Sign in to continue your learning journey
+          <p className="text-dark-600">
+            Sign in to track your learning payments
           </p>
         </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <p className="text-red-400 text-sm text-center">
+              {getErrorMessage(error)}
+            </p>
+          </div>
+        )}
 
         <div className="space-y-4">
           {providers &&
@@ -96,5 +139,24 @@ export default function SignIn() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function SignIn() {
+  return (
+    <Suspense
+      fallback={
+        <main className="gradient-bg min-h-screen flex items-center justify-center p-4">
+          <div className="glass rounded-2xl p-8 w-full max-w-md">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto"></div>
+              <p className="text-white mt-4">Loading...</p>
+            </div>
+          </div>
+        </main>
+      }
+    >
+      <SignInContent />
+    </Suspense>
   );
 }

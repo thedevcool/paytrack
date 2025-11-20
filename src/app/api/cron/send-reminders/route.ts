@@ -34,7 +34,9 @@ export async function GET() {
           program.userEmail,
           program.programName,
           actualPaymentAmount,
-          program.nextPaymentDate ? program.nextPaymentDate.toISOString() : new Date().toISOString()
+          program.nextPaymentDate
+            ? program.nextPaymentDate.toISOString()
+            : new Date().toISOString()
         );
 
         remindersSent++;

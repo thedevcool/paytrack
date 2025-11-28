@@ -46,12 +46,19 @@ export default function ProgramCard({ program }: ProgramCardProps) {
     ? new Date(program.nextPaymentDate)
     : null;
 
-  // Payment is due if:
-  // 1. There's a nextPaymentDate and it's past due, OR
-  // 2. Program is approved and no payments made yet (first payment)
-  const isPaymentDue = nextPaymentDate
-    ? nextPaymentDate <= new Date() && !program.isCompleted
-    : program.status === "approved" && program.amountPaid === 0;
+  // Show Pay Now button if:
+  // 1. Program is approved and not completed
+  // 2. First payment hasn't been made yet, OR
+  // 3. User has made at least one payment (allow payment anytime after first payment)
+  const canMakePayment = 
+    program.status === "approved" && 
+    !program.isCompleted &&
+    (program.amountPaid === 0 || program.amountPaid > 0);
+
+  // Check if payment is overdue (for styling purposes only)
+  const isOverdue = nextPaymentDate
+    ? nextPaymentDate <= new Date() && !program.isCompleted && program.amountPaid > 0
+    : false;
 
   const handlePayment = async () => {
     setLoading(true);
@@ -121,13 +128,13 @@ export default function ProgramCard({ program }: ProgramCardProps) {
           text: "Completed",
         };
       }
-      if (isPaymentDue) {
+      if (isOverdue) {
         return {
           color: "text-red-400",
           bgColor: "bg-red-500/10",
           borderColor: "border-red-500/20",
           icon: ExclamationTriangleIcon,
-          text: "Payment Due",
+          text: "Payment Overdue",
         };
       }
       return {
@@ -167,8 +174,8 @@ export default function ProgramCard({ program }: ProgramCardProps) {
       whileTap={{ scale: 0.98 }}
       className="group relative"
     >
-      {/* Payment Due Animation */}
-      {isPaymentDue && (
+      {/* Payment Overdue Animation - only show when truly overdue */}
+      {isOverdue && (
         <motion.div
           animate={{
             scale: [1, 1.05, 1],
@@ -185,7 +192,7 @@ export default function ProgramCard({ program }: ProgramCardProps) {
 
       <div
         className={`relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:bg-white/10 hover:border-white/20 transition-all duration-300 ${
-          isPaymentDue ? "border-red-500/30 shadow-red-500/20 shadow-lg" : ""
+          isOverdue ? "border-red-500/30 shadow-red-500/20 shadow-lg" : ""
         }`}
       >
         {/* Header */}
@@ -287,13 +294,13 @@ export default function ProgramCard({ program }: ProgramCardProps) {
           {!program.isCompleted && (
             <div
               className={`rounded-lg p-3 ${
-                isPaymentDue ? "bg-red-500/10" : "bg-blue-500/10"
+                isOverdue ? "bg-red-500/10" : "bg-blue-500/10"
               }`}
             >
               <div className="flex items-center justify-between">
                 <div
                   className={`flex items-center space-x-2 ${
-                    isPaymentDue ? "text-red-400" : "text-blue-400"
+                    isOverdue ? "text-red-400" : "text-blue-400"
                   }`}
                 >
                   <CalendarIcon className="h-4 w-4" />
@@ -301,7 +308,7 @@ export default function ProgramCard({ program }: ProgramCardProps) {
                 </div>
                 <span
                   className={`font-semibold text-sm sm:text-base ${
-                    isPaymentDue ? "text-red-300" : "text-blue-300"
+                    isOverdue ? "text-red-300" : "text-blue-300"
                   }`}
                 >
                   {program.amountPaid === 0
@@ -317,15 +324,18 @@ export default function ProgramCard({ program }: ProgramCardProps) {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-          {!program.isCompleted &&
-            isPaymentDue &&
-            program.status === "approved" && (
+          {/* Show Pay Now button for all approved, non-completed programs */}
+          {canMakePayment && (
               <motion.button
                 onClick={handlePayment}
                 disabled={loading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold px-4 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-glow"
+                className={`flex-1 flex items-center justify-center space-x-2 ${
+                  isOverdue 
+                    ? "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-red-500/50" 
+                    : "bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700"
+                } text-white font-semibold px-4 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-glow`}
               >
                 {loading ? (
                   <motion.div
@@ -341,7 +351,7 @@ export default function ProgramCard({ program }: ProgramCardProps) {
                   <CreditCardIcon className="h-4 w-4" />
                 )}
                 <span className="text-sm sm:text-base">
-                  {loading ? "Processing..." : "Make Payment"}
+                  {loading ? "Processing..." : program.amountPaid === 0 ? "Make First Payment" : "Pay Now"}
                 </span>
               </motion.button>
             )}
